@@ -1,0 +1,26 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    z-index: 999;
+    transition: background-color 0.5s ease;
+}
+
+.title {
+    font-size: 25px;
+    font-family: 'Proxima Nova';
+    color: white;
+}
+
+.span {
+    font-size: 16px;
+    font-family: 'Proxima Nova';
+    color: white;
+    opacity: 0.8;
+    transition: opacity 0.5s ease;
+}
+
+.span:hover {
+    opacity: 1;
+}

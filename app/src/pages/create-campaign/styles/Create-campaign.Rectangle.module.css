@@ -1,0 +1,28 @@
+@keyframes drop-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+}
+  
+.rectangle {
+    width: 450px;
+    height: 400px;
+    background: rgba(0, 0, 0, 0);
+    border: 2px solid aqua;
+    border-width: 2px;
+    border-radius: 20px;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 55%;
+}
+  
+.show {
+    display: block;
+}
+  

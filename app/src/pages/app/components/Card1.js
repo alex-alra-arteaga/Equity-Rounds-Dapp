@@ -16,7 +16,7 @@ export const Card1 = () => (
       <Card.Image
         src="https://nextui.org/images/card-example-6.jpeg"
         width="100%"
-        height="100%"
+        height="70%"
         objectFit="cover"
         alt="Card example background"
       />
@@ -42,7 +42,7 @@ export const Card1 = () => (
         </Col>
         <Col>
           <Row justify="flex-end">
-            <Button flat auto rounded color="secondary">
+            <Button flat auto rounded color="secondary" css={{right: "18%"}}>
               <Text
                 css={{ color: "inherit" }}
                 size={12}
