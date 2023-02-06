@@ -7,8 +7,6 @@ require("dotenv").config({ path: ".env" });
 
 async function main() {
   const { log } = deployments
-  const {deployer} = await getNamedAccounts()
-  const chainId = network.config.chainId
   let equityCampaign
 
   if (!developmentChains.includes(network.name)) {

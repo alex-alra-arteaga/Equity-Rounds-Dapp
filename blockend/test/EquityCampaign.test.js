@@ -1,6 +1,6 @@
 const { expect, assert } = require("chai");
 const { parseEther } = require('ethers/lib/utils')
-const { getNamedAccounts, deployments, ethers, network } = require("hardhat")
+const { getNamedAccounts, ethers, network } = require("hardhat")
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers")
 const {developmentChains, networkConfig} = require("../helper-hardhat-config")
@@ -46,6 +46,18 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
           test.error
         );
       }
+    })
+    it("emits Campaign object in event", async () => {
+      const blockNumBefore = await ethers.provider.getBlockNumber();
+      const blockBefore = await ethers.provider.getBlock(blockNumBefore);
+      const timestampBefore = blockBefore.timestamp;
+      const {equityCampaign, fee, deployer} = await loadFixture(EquityCampaignFixture)
+      const tx = await equityCampaign.createCampaign(20, 100, 20, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await expect(tx).to.emit(equityCampaign, "campaignCreated01").withArgs(
+        deployer,
+        20,
+        100
+      )
     })
     it("saves state of campaign", async () => {
       const {equityCampaign, fee, deployer} = await loadFixture(EquityCampaignFixture)

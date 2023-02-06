@@ -40,8 +40,8 @@ contract EquityCampaign {
      */
     struct Investor {
         uint64 investorID;
-        uint160 sharesOwned;
-        uint160 donated; // in wi
+        uint96 sharesOwned;
+        uint96 donated; // in wei
         // uint percentageOfBusiness;   backend calculated
         // uint amountInvested;         backend calculated
         // ContributionLevel level;     backend calculated
@@ -74,8 +74,10 @@ contract EquityCampaign {
     /**
      * @notice Events
      * @dev They're queried for frontend UI display, marked as indexed for easier query and gas reduction
+     * It is necessary to do 2 events for campagin created due to the impractability of emitting the Campaign objecte, because it would be hashed
      */
-    event campaignCreated(Campaign indexed campaign);
+    event campaignCreated01(address indexed founder, uint8 indexed percentageOfEquity, uint40 indexed sharesOffered);
+    event campaignCreated02(uint88 indexed pricePerShare, uint64 indexed creationTime, uint128 indexed deadline);
     event contribution(address indexed contributor, uint indexed shares, uint indexed campaignID);
     event donationWithdrawed(address indexed withdrawer, uint indexed campaignID);
     event sharesSold(address indexed contributor, uint indexed shares, uint indexed campaignID);
@@ -87,9 +89,9 @@ contract EquityCampaign {
             revert EquityCampaign__NotFounder();
         _;
     }
-    /// @dev To prevent miners to potentially influence the block.timestamp we add the 12 minutes of block confirmation plus an 8 minutes margin
+
     modifier hasCampaignEnded(uint _campaignID) {
-        if (block.timestamp + 20 minutes < campaigns[_campaignID].deadline)
+        if (block.timestamp < campaigns[_campaignID].deadline)
             revert EquityCampaign__HasNotEnded();
         _;
     }
@@ -97,7 +99,7 @@ contract EquityCampaign {
     modifier isCampaignRunning(uint _campaignID) {
         if (!campaigns[_campaignID].init)
             revert  EquityCampaign__InvalidCampaignID();
-        if (block.timestamp + 20 minutes > campaigns[_campaignID].deadline)
+        if (block.timestamp > campaigns[_campaignID].deadline)
             revert EquityCampaign__IsNotRunning();
         _;
     }
@@ -118,7 +120,7 @@ contract EquityCampaign {
     ) public payable {
         if (msg.value < FEE)
             revert EquityCampaign__FeeNotPayed();
-        if (_sharesOffered == 0 || _pricePerShare == 0 || _deadline < block.timestamp + 20 minutes
+        if (_sharesOffered == 0 || _pricePerShare == 0 || _deadline < block.timestamp
         || _percentageOfEquity == 0 || _percentageOfEquity >= 100)
             revert EquityCampaign__SafetyCheck();
         s_numberCampaigns++;
@@ -132,10 +134,11 @@ contract EquityCampaign {
             sharesOffered: _sharesOffered,
             pricePerShare: _pricePerShare,
             sharesBought: 0,
-            creationTime: uint64(block.timestamp + 20 minutes),
+            creationTime: uint64(block.timestamp),
             deadline: _deadline
         });
-        emit campaignCreated(campaigns[s_numberCampaigns]);
+        emit campaignCreated01(msg.sender, _percentageOfEquity, _sharesOffered);
+        emit campaignCreated02(_pricePerShare, uint64(block.timestamp), _deadline);
     }
 
     /**
@@ -163,7 +166,7 @@ contract EquityCampaign {
             investorInfo[_campaignID][msg.sender].sharesOwned += _amount;
             campaigns[_campaignID].sharesBought += _amount;
         } else {
-            investorInfo[_campaignID][msg.sender].donated = uint160(msg.value);
+            investorInfo[_campaignID][msg.sender].donated = uint96(msg.value);
             campaigns[_campaignID].donations += uint88(msg.value);
         }
         emit contribution(msg.sender, _amount, _campaignID);

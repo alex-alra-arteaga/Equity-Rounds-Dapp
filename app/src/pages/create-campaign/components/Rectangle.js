@@ -54,7 +54,7 @@ const Rectangle = () => {
       <Spacer y={0.4}/>
       <div style={{ display: "flex", justifyContent: "center" }}>
       <Button icon={<LockIcon fill="currentColor" />} color="gradient" size='lg' >
-        Lock
+        Deploy
         <Loading type="points" color="currentColor" size="sm" />
       </Button>
       </div>

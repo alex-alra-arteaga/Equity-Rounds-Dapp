@@ -1,4 +1,5 @@
 export const EQUITY_CAMPAIGN_CONTRACT_ADDRESS = "0xC5d475De9dfafda6d08ac6Be958F29e88A87e439"
+export const API_URL = "https://api.studio.thegraph.com/query/41909/ignota-protocol/v1"
 export const abi = [
     {
       "inputs": [],
