@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
 import Property from './components/Property';
 import { Card } from '@nextui-org/react';
@@ -6,9 +6,40 @@ import { Card1 } from './components/Card1';
 import Background from '../components/Background';
 import Navbar from './components/Navbar';
 import Image from 'next/image';
+//import { createClient } from 'urql';
+//import { API_URL } from 'constants/constants';
+//import { execute } from 'graphql';
+//
+//// Have The Graph for querying new events and adding them in IPFS or "", for the statistics of the investors, use Ceramic
+//
+//const query = `
+//query {
+//  campaignCreated01S {
+//    id
+//    founder
+//    percentageOfEquity
+//    sharesOffered
+//  }
+//  campaignCreated02S {
+//    id
+//    pricePerShare
+//    creationTime
+//    deadline
+//  }
+//}`
+//
+//const client = createClient({
+//  url: API_URL,
+//})
+//
+//async function fetchData() {
+//  const response = await client.query(query).toPromise()
+//  console.log('response', response)
+//  return response
+//}
 
 const Home = () => {
-    const cards = [1, 2, 3, 4, 5];
+  const cards = [1, 2, 3, 4, 5];
 
   return (
     <>

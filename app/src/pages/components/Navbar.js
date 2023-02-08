@@ -39,7 +39,7 @@ export default function Navbar() {
     <div style={{width: 40}}></div>
     <div style={{width: 40}}></div>
     <div style={{width: 40}}></div>
-    <Link href="//app" style={{ textDecoration: 'none'}}>
+    <Link href="/app" style={{ textDecoration: 'none'}}>
         <button className={styles.launchbutton}>Launch App</button>
     </Link>
     <div style={{width: 20}}></div>

@@ -1,0 +1,9 @@
+# .graphclientrc.yml
+sources:
+  - name: ignota-protocol
+    handler:
+      graphql:
+        endpoint: https://api.studio.thegraph.com/query/41909/ignota-protocol/v1
+
+documents:
+  - ./query.graphql

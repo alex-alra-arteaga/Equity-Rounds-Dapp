@@ -23,6 +23,7 @@ error EquityCampaign__InvalidAddress();
  * @notice Transparent, secure and permissionless contract to crowdfund investing rounds, redistributing its equity among its investors
  * @dev Storage and logical implementation, website at: ""
  * @custom:experimental Proof of Concept Equity Round contract
+ * @custom:in-a-future Capability for the founder to mint shares for an specific address (example: employee or cofounder address)
  * @custom:legal-advice Smart contract is proof of the borrowing obligations the founder has with its investors,
  * if he doesn't deliver, it has an irl legal obligation
  */
@@ -73,8 +74,8 @@ contract EquityCampaign {
 
     /**
      * @notice Events
-     * @dev They're queried for frontend UI display, marked as indexed for easier query and gas reduction
-     * It is necessary to do 2 events for campagin created due to the impractability of emitting the Campaign objecte, because it would be hashed
+     * @dev They're queried for IRL frontend UI display and other applications that could be build in top using tools as The Graph, marked as indexed for easier query and gas reduction
+     * It is necessary to do 2 events for campaign created due to the impractability of emitting the Campaign objecte, because it would be hashed
      */
     event campaignCreated01(address indexed founder, uint8 indexed percentageOfEquity, uint40 indexed sharesOffered);
     event campaignCreated02(uint88 indexed pricePerShare, uint64 indexed creationTime, uint128 indexed deadline);
@@ -215,21 +216,6 @@ contract EquityCampaign {
     }
 
     /// @custom:to-consider A future implementation with a function call to 'delete' very old campaigns data or investors with current 0 shares amount, for up to 75% gas refund 
-
-    /* getter functions */
-    function getCampaign(uint _campaignID) public view returns (Campaign memory) {
-        if (!campaigns[_campaignID].init)
-            revert EquityCampaign__InvalidCampaignID();
-        return campaigns[_campaignID];
-    }
-
-    function getInvestor(uint _campaignID, address investor) public view returns (Investor memory) {
-        if (investorInfo[_campaignID][investor].investorID == 0)
-            revert EquityCampaign__InvalidInvestorID();
-        if (investor == address(0))
-            revert EquityCampaign__InvalidAddress();
-        return investorInfo[_campaignID][investor];
-    }
 
     receive() external payable {}
 

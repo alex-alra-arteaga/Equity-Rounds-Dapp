@@ -1,0 +1,36 @@
+query campaignCreated {
+    campaignCreated01S {
+      id
+      founder
+      percentageOfEquity
+      sharesOffered
+    }
+    campaignCreated02S {
+      id
+      pricePerShare
+      creationTime
+      deadline
+    }
+}
+
+query contribution {
+  contribution {
+    id
+    contributor
+    shares
+    campaignID
+  }
+}
+
+query donationWithdrawed {
+    id
+    withdrawer
+    campaignID
+}
+
+query sharesSold {
+    id
+    contributor
+    shares
+    campaignID
+}
