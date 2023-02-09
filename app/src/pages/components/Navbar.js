@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from '@/styles/Navbar.module.css'
-import {
-  ConnectButton
-} from "@rainbow-me/rainbowkit";
 
 export default function Navbar() {
   const [backgroundColor, setBackgroundColor] = useState("transparent");
@@ -46,8 +43,3 @@ export default function Navbar() {
     </header>
   )
 }
-
-// <ConnectButton className={styles.container} showBalance={{
-//   smallScreen: true,
-//   largeScreen: true,
-// }}/>

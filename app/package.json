@@ -9,9 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@coinbase/wallet-sdk": "^3.6.3",
     "@next/font": "13.1.6",
     "@nextui-org/react": "^1.0.0-beta.12",
     "@rainbow-me/rainbowkit": "^0.8.1",
+    "clsx": "^1.2.1",
     "eslint": "8.33.0",
     "eslint-config-next": "13.1.6",
     "ethers": "^5.7.2",
@@ -25,6 +27,7 @@
     "wagmi": "^0.9.6"
   },
   "devDependencies": {
-    "@graphprotocol/client-cli": "^2.2.16"
+    "@graphprotocol/client-cli": "^2.2.16",
+    "dotenv": "^16.0.3"
   }
 }

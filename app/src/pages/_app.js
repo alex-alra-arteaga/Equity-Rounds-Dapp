@@ -9,15 +9,11 @@ import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import { mainnet, polygon, optimism, goerli } from '@wagmi/core/chains'
-import styles from '../styles/Wallet.module.css'
-
+require("dotenv").config({ path: false });
 
 const { chains, provider } = configureChains(
   [mainnet, goerli, polygon, optimism],
-  [
-    alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
-    publicProvider()
-  ]
+  [alchemyProvider({ apiKey: 'n47skukukkxpwhFSGnTCMWNkzkRLQdR1'}), publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({

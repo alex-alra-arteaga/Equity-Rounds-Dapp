@@ -7,6 +7,12 @@
     }
 }
 
+.title {
+  font-size: 25px;
+  font-family: 'Proxima Nova';
+  color: white;
+}
+
 .rectangle {
     width: 450px;
     height: 400px;

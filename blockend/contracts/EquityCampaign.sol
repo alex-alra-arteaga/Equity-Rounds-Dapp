@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-// Depending on share be eligible to be in the DAO
-import "hardhat/console.sol";
-
 error EquityCampaign__SafetyCheck();
 error EquityCampaign__FeeNotPayed();
 error EquityCampaign__NotEnoughFundraiseGoal();
@@ -70,22 +67,18 @@ contract EquityCampaign {
     // mapping from the ID to its respective campaign
     mapping(uint => Campaign) public campaigns;
     // mapping from ID of campaign, to investor address, to its information
-    mapping(uint => mapping (address => Investor)) public investorInfo;
+    mapping(uint => mapping(address => Investor)) public investorInfo;
 
     /**
      * @notice Events
-     * @dev They're queried for IRL frontend UI display and other applications that could be build in top using tools as The Graph, marked as indexed for easier query and gas reduction
-     * It is necessary to do 2 events for campaign created due to the impractability of emitting the Campaign objecte, because it would be hashed
+     * @dev In the createCampaign function you can store the ipfsCID for your information text, which will be linked to the campaignID for the frontend display, this event will be queried by The Graph
+     * The frontend itself hashes the information of the businessName and it's industry type, stores it in IPFS, returns the CID and passes it to the contract
      */
-    event campaignCreated01(address indexed founder, uint8 indexed percentageOfEquity, uint40 indexed sharesOffered);
-    event campaignCreated02(uint88 indexed pricePerShare, uint64 indexed creationTime, uint128 indexed deadline);
-    event contribution(address indexed contributor, uint indexed shares, uint indexed campaignID);
-    event donationWithdrawed(address indexed withdrawer, uint indexed campaignID);
-    event sharesSold(address indexed contributor, uint indexed shares, uint indexed campaignID);
+    event campaignInfo(string indexed ipfsCID);
 
     modifier isFounder(uint _campaignID) {
         if (!campaigns[_campaignID].init)
-            revert  EquityCampaign__InvalidCampaignID();
+            revert EquityCampaign__InvalidCampaignID();
         if (campaigns[_campaignID].founder != msg.sender)
             revert EquityCampaign__NotFounder();
         _;
@@ -114,6 +107,7 @@ contract EquityCampaign {
      * @param _deadline: representation in unix time of campaign termination
      */
     function createCampaign(
+        string memory ipfsCID,
         uint8 _percentageOfEquity,
         uint40 _sharesOffered,
         uint88 _pricePerShare,
@@ -122,7 +116,7 @@ contract EquityCampaign {
         if (msg.value < FEE)
             revert EquityCampaign__FeeNotPayed();
         if (_sharesOffered == 0 || _pricePerShare == 0 || _deadline < block.timestamp
-        || _percentageOfEquity == 0 || _percentageOfEquity >= 100)
+        || _percentageOfEquity == 0 || _percentageOfEquity > 100)
             revert EquityCampaign__SafetyCheck();
         s_numberCampaigns++;
         campaigns[s_numberCampaigns] = Campaign({
@@ -138,8 +132,7 @@ contract EquityCampaign {
             creationTime: uint64(block.timestamp),
             deadline: _deadline
         });
-        emit campaignCreated01(msg.sender, _percentageOfEquity, _sharesOffered);
-        emit campaignCreated02(_pricePerShare, uint64(block.timestamp), _deadline);
+        emit campaignInfo(ipfsCID);
     }
 
     /**
@@ -170,7 +163,6 @@ contract EquityCampaign {
             investorInfo[_campaignID][msg.sender].donated = uint96(msg.value);
             campaigns[_campaignID].donations += uint88(msg.value);
         }
-        emit contribution(msg.sender, _amount, _campaignID);
     }
 
     // @notice: Allows the funder of its campaign to withdraw all the donations when the campaign is ended
@@ -180,7 +172,6 @@ contract EquityCampaign {
         (bool sent, ) = msg.sender.call{value: value}("");
         if (!sent)
             revert EquityCampaign__SellSharesFailed();
-        emit donationWithdrawed(msg.sender, _campaignID);
     }
 
     // @notice: Allows the particular to sell a desired amount of shares of an specific campaign
@@ -192,7 +183,6 @@ contract EquityCampaign {
         (bool sent, ) = msg.sender.call{value: _amount * campaigns[_campaignID].pricePerShare}("");
         if (!sent)
             revert EquityCampaign__SellSharesFailed();
-        emit sharesSold(msg.sender, _amount, _campaignID);
     }
 
     // @notice: Allows the founder of the campaign to sell a desired amount of shares once the campaign ends, investors shares info are not modified
@@ -205,7 +195,6 @@ contract EquityCampaign {
         (bool sent, ) = msg.sender.call{value: _amount * campaigns[_campaignID].pricePerShare}("");
         if (!sent)
             revert EquityCampaign__SellSharesFailed();
-        emit sharesSold(msg.sender, _amount, _campaignID);
     }
 
     // @notice: Allows the funder of a respective campaign to change its ownership

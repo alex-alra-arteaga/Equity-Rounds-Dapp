@@ -27,19 +27,18 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
       const { equityCampaign, fee, lessFee } = await loadFixture(EquityCampaignFixture);
       const tests = [
         // percentageOfEquity == 0
-        { arguments: [0, 100, 20, Math.floor(Date.now()/1000) + 100, {value: fee}], error: "EquityCampaign__SafetyCheck" },
+        { arguments: ["qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 0, 100, 20, Math.floor(Date.now()/1000) + 100, {value: fee}], error: "EquityCampaign__SafetyCheck" },
         // percentageOfEquity > 100
-        { arguments: [101, 100, 20, Math.floor(Date.now()/1000) + 100, {value: fee}], error: "EquityCampaign__SafetyCheck" },
+        { arguments: ["qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 101, 100, 20, Math.floor(Date.now()/1000) + 100, {value: fee}], error: "EquityCampaign__SafetyCheck" },
         // sharesOffered == 0
-        { arguments: [20, 0, 20, Math.floor(Date.now()/1000) + 100, {value: fee}], error: "EquityCampaign__SafetyCheck" },
+        { arguments: ["qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 0, 20, Math.floor(Date.now()/1000) + 100, {value: fee}], error: "EquityCampaign__SafetyCheck" },
         // pricePerShare == 0
-        { arguments: [20, 100, 0, Math.floor(Date.now()/1000) + 100, {value: fee}], error: "EquityCampaign__SafetyCheck" },
+        { arguments: ["qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, 0, Math.floor(Date.now()/1000) + 100, {value: fee}], error: "EquityCampaign__SafetyCheck" },
         // deadline < block.timestamp
-        { arguments: [20, 100, 20, Math.floor(Date.now()/1000) - 10, {value: fee}], error: "EquityCampaign__SafetyCheck" },
+        { arguments: ["qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, 20, Math.floor(Date.now()/1000) - 10, {value: fee}], error: "EquityCampaign__SafetyCheck" },
         // msg.value < fee
-        { arguments: [85, 985, 20, Math.floor(Date.now()/1000) + 100, {value: lessFee}], error: "EquityCampaign__FeeNotPayed" },
+        { arguments: ["qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 85, 985, 20, Math.floor(Date.now()/1000) + 100, {value: lessFee}], error: "EquityCampaign__FeeNotPayed" },
       ];
-    
       for (const test of tests) {
         expect(equityCampaign.createCampaign(...test.arguments)).to.be.revertedWithCustomError(
           equityCampaign,
@@ -52,17 +51,13 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
       const blockBefore = await ethers.provider.getBlock(blockNumBefore);
       const timestampBefore = blockBefore.timestamp;
       const {equityCampaign, fee, deployer} = await loadFixture(EquityCampaignFixture)
-      const tx = await equityCampaign.createCampaign(20, 100, 20, Math.floor(Date.now() / 1000) + 10000, {value: fee})
-      await expect(tx).to.emit(equityCampaign, "campaignCreated01").withArgs(
-        deployer,
-        20,
-        100
-      )
+      const tx = await equityCampaign.createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, 20, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await expect(tx).to.emit(equityCampaign, "campaignInfo").withArgs("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR")
     })
     it("saves state of campaign", async () => {
       const {equityCampaign, fee, deployer} = await loadFixture(EquityCampaignFixture)
-      equityCampaign.createCampaign(20, 100, 20, Math.floor(Date.now() / 1000) + 10000, {value: fee})
-      const state = await equityCampaign.getCampaign(1)
+      equityCampaign.createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, 20, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      const state = await equityCampaign.campaigns(1)
       assert.equal(state.init, true)
       assert.equal(state.founder, deployer)
       assert.equal(state.percentageOfEquity, 20)
@@ -72,7 +67,7 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
   describe("contributeToCampaign", function() {
     it("reverts on invalid values", async () => {
       const { equityCampaign, cost1, cost2, fee } = await loadFixture(EquityCampaignFixture);
-      equityCampaign.createCampaign(20, 100, 20, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      equityCampaign.createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, 20, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       const tests = [
         { arguments: [10, 0, true, {value: 0}], error: "EquityCampaign__InvalidCampaignID" },
         { arguments: [10, 2, true,  {value: 0}], error: "EquityCampaign__InvalidCampaignID" },
@@ -90,10 +85,10 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
     it("doesn't buy shares when is donator", async () => {
       const amount = ethers.utils.parseEther("3.5")
       const {equityCampaign, fee, deployer} = await loadFixture(EquityCampaignFixture)
-      await equityCampaign.createCampaign(20, 100, 20, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await equityCampaign.createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, 20, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       await equityCampaign.contributeToCampaign(100, 1, false, {value: amount})
-      const campaign = await equityCampaign.getCampaign(1)
-      const investor = await equityCampaign.getInvestor(1, deployer)
+      const campaign = await equityCampaign.campaigns(1)
+      const investor = await equityCampaign.investorInfo(1, deployer)
       expect(campaign.sharesBought).to.equal(0)
       expect(campaign.donations).to.equal(amount)
       expect(investor.sharesOwned).to.equal(0);
@@ -102,10 +97,10 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
     it("buys shares when is investor", async () => {
       const amount = ethers.utils.parseEther("3.5")
       const {equityCampaign, fee, deployer} = await loadFixture(EquityCampaignFixture)
-      await equityCampaign.createCampaign(20, 100, 20, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await equityCampaign.createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, 20, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       await equityCampaign.contributeToCampaign(100, 1, true, {value: amount})
-      const campaign = await equityCampaign.getCampaign(1)
-      const investor = await equityCampaign.getInvestor(1, deployer)
+      const campaign = await equityCampaign.campaigns(1)
+      const investor = await equityCampaign.investorInfo(1, deployer)
       expect(campaign.sharesBought).to.equal(100)
       expect(campaign.donations).to.equal(0)
       expect(investor.sharesOwned).to.equal(100)
@@ -114,7 +109,7 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
   describe("withdrawDonations", async () => {
     it("reverts if the caller is not owner of the campaign", async () => {
       const { equityCampaign, founder, investor1, fee, cost1, cost2 } = await loadFixture(EquityCampaignFixture)
-      await equityCampaign.connect(founder).createCampaign(20, 100, cost1, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await equityCampaign.connect(founder).createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, cost1, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       await equityCampaign.contributeToCampaign(16, 1, true, {value: cost2})
       await expect(equityCampaign.connect(investor1).withdrawDonations(1)).to.be.revertedWithCustomError(
         equityCampaign,
@@ -123,7 +118,7 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
     })
     it("reverts if campaign has not ended", async () => {
       const { equityCampaign, founder, fee, cost1, cost2 } = await loadFixture(EquityCampaignFixture)
-      await equityCampaign.connect(founder).createCampaign(20, 100, cost1, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await equityCampaign.connect(founder).createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, cost1, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       await equityCampaign.contributeToCampaign(100, 1, false, {value: cost2})
       await expect(equityCampaign.connect(founder).withdrawDonations(1)).to.be.rejectedWith(
         equityCampaign,
@@ -132,14 +127,14 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
     })
     it("all donations are withdrawed", async () => {
       const { equityCampaign, founder, fee, cost2 } = await loadFixture(EquityCampaignFixture)
-      await equityCampaign.connect(founder).createCampaign(20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await equityCampaign.connect(founder).createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       await equityCampaign.contributeToCampaign(100, 1, false, {value: cost2})
-      const campaign = await equityCampaign.getCampaign(1)
+      const campaign = await equityCampaign.campaigns(1)
       expect(campaign.donations).to.equal(cost2)
       await network.provider.send("evm_setNextBlockTimestamp", [162509760000])
       const balance_before = await founder.getBalance()
       await equityCampaign.connect(founder).withdrawDonations(1)
-      const campaign_after = await equityCampaign.getCampaign(1)
+      const campaign_after = await equityCampaign.campaigns(1)
       expect(campaign_after.donations).to.equal(0)
       const balance_after = await founder.getBalance()
       // there are losses with gas that are difficult to calculate
@@ -150,7 +145,7 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
   describe("sellShares", async() => {
     it("reverts if campaign has ended or if it doesn't exist", async () => {
       const { equityCampaign, founder, fee } = await loadFixture(EquityCampaignFixture)
-      await equityCampaign.connect(founder).createCampaign(20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await equityCampaign.connect(founder).createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       await network.provider.send("evm_setNextBlockTimestamp", [162509760000])
       await expect(equityCampaign.sellShares(2, 1)).to.be.revertedWithCustomError(
         equityCampaign,
@@ -163,7 +158,7 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
     })
     it("reverts if he doesn't have the amount of shares or if the intended amount to sell is 0", async () => {
       const { equityCampaign, founder, fee, investor1, cost1, cost2 } = await loadFixture(EquityCampaignFixture)
-      await equityCampaign.connect(founder).createCampaign(20, 100, cost1, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await equityCampaign.connect(founder).createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, cost1, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       await equityCampaign.connect(investor1).contributeToCampaign(100, 1, false, {value: cost2})
       await expect(equityCampaign.sellShares(1, 1)).to.be.rejectedWith(
         equityCampaign,
@@ -177,12 +172,12 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
     it("substracts correctly the amount of shares sold and sends the corresponding balance of the shares to the investor", async () => {
       const amountSold = 90
       const { equityCampaign, founder, investor1, fee, cost2 } = await loadFixture(EquityCampaignFixture)
-      await equityCampaign.connect(founder).createCampaign(20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await equityCampaign.connect(founder).createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       await equityCampaign.connect(investor1).contributeToCampaign(100, 1, true, {value: cost2})
       const balance_before = await investor1.getBalance()
       await equityCampaign.connect(investor1).sellShares(amountSold, 1)
-      const campaign = await equityCampaign.getCampaign(1)
-      const investor = await equityCampaign.getInvestor(1, investor1.address)
+      const campaign = await equityCampaign.campaigns(1)
+      const investor = await equityCampaign.investorInfo(1, investor1.address)
       assert.equal(campaign.sharesBought, 10)
       assert.equal(investor.sharesOwned, 10)
       const balance_after = await investor1.getBalance()
@@ -193,7 +188,7 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
   describe("sellSharesFounder", async () => {
     it("reverts if the caller is not the founder", async () => {
       const { equityCampaign, founder, fee, investor1 } = await loadFixture(EquityCampaignFixture)
-      await equityCampaign.connect(founder).createCampaign(20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await equityCampaign.connect(founder).createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       await network.provider.send("evm_setNextBlockTimestamp", [162509760000])
       await expect(equityCampaign.connect(investor1).sellSharesFounder(2, 1)).to.be.revertedWithCustomError(
         equityCampaign,
@@ -202,7 +197,7 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
     })
     it("reverts if campaign has not ended or if it doesn't exist", async () => {
       const { equityCampaign, founder, fee } = await loadFixture(EquityCampaignFixture)
-      await equityCampaign.connect(founder).createCampaign(20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await equityCampaign.connect(founder).createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       await expect(equityCampaign.sellSharesFounder(2, 1)).to.be.revertedWithCustomError(
         equityCampaign,
         "EquityCampaign__HasNotEnded"
@@ -215,12 +210,12 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
     it("substracts correctly the amount of shares sold and sends the corresponding balance of the shares to the investor", async () => {
       const amountSold = 90
       const { equityCampaign, founder, investor1, fee, cost2 } = await loadFixture(EquityCampaignFixture)
-      await equityCampaign.connect(founder).createCampaign(20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await equityCampaign.connect(founder).createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       await equityCampaign.connect(investor1).contributeToCampaign(100, 1, true, {value: cost2})
       const balance_before = await founder.getBalance()
       await network.provider.send("evm_setNextBlockTimestamp", [162509760000])
       await equityCampaign.connect(founder).sellSharesFounder(amountSold, 1)
-      const campaign = await equityCampaign.getCampaign(1)
+      const campaign = await equityCampaign.campaigns(1)
       assert.equal(campaign.sharesBought, 10)
       const balance_after = await founder.getBalance()
       const operationAccuracy = balance_after.sub(balance_before) / amountSold * campaign.pricePerShare
@@ -230,14 +225,14 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
   describe("transferFounderOwnership", async () => {
     it("transfers correctly the ownership of the campaign", async () => {
       const { equityCampaign, founder, investor1, fee, cost2 } = await loadFixture(EquityCampaignFixture)
-      await equityCampaign.connect(founder).createCampaign(20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
+      await equityCampaign.connect(founder).createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", 20, 100, fee, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       await equityCampaign.connect(investor1).contributeToCampaign(100, 1, true, {value: cost2})
       await expect(equityCampaign.connect(investor1).transferFounderOwnership(investor1.address, 1)).to.be.revertedWithCustomError(
         equityCampaign,
         "EquityCampaign__NotFounder"
       )
       await equityCampaign.connect(founder).transferFounderOwnership(investor1.address, 1)
-      const campaign = await equityCampaign.getCampaign(1)
+      const campaign = await equityCampaign.campaigns(1)
       expect(campaign.founder).to.equal(investor1.address)
     })
   })
