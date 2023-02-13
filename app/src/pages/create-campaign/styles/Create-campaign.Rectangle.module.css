@@ -29,6 +29,21 @@
 }
   
 .show {
-    display: block;
+  display: block;
 }
-  
+
+.img_input_label {
+  display: inline-block;
+  width: 75%;
+  padding: 12px 24px;
+  text-align: center;
+  background-color: #fff;
+  border-radius: 14px;
+  border: 1.5px solid red;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.img_input {
+  display: none;
+}

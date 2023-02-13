@@ -25,10 +25,9 @@ export const mapInfoToID = async (equityCampaignContract, companyName, industry)
     console.log(map.get(campaignID))
   }
 
-export const createCampaign = async (businessName, industry, equityCampaignContract, percentageOfEquity, sharesOffered, pricePerShare, deadline) => {
+export const createCampaign = async (ipfsCID, equityCampaignContract, percentageOfEquity, sharesOffered, pricePerShare, deadline) => {
   try {
   const fee = ethers.utils.parseEther("0.01")
-  const ipfsCID = getIPFS_CID(businessName, industry)
   const tx = await equityCampaignContract.createCampaign(
     ipfsCID,
     percentageOfEquity,
