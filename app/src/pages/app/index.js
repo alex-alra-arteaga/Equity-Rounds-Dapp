@@ -1,14 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import Header from './components/Header';
-import Property from './components/Property';
-import { Card } from '@nextui-org/react';
 import { Card1 } from './components/Card1';
-import Background from '../components/Background';
 import Navbar from './components/Navbar';
 import Image from 'next/image';
+import { BigNumber, Contract, ethers, providers, Wallet } from "ethers"
+import { EQUITY_CAMPAIGN_CONTRACT_ADDRESS, ABI } from "constants/constants"
+import { useSigner } from "wagmi"
 
 const Home = () => {
-  const cards = [1, 2, 3, 4, 5];
+  const [cards, setCards] = useState([])
+  const { data: signer } = useSigner()
+  const equityCampaignContract = new Contract(
+    EQUITY_CAMPAIGN_CONTRACT_ADDRESS,
+    ABI,
+    signer,
+  )
+  useEffect(() => {
+    const renderCards = async () => {
+      const numOfCampaigns = 4
+      console.log(numOfCampaigns)
+      const cards = []
+      for (let i = 0; i != numOfCampaigns; i++) {
+        cards.push(<Card1 key={i}/>)
+      }
+      setCards(cards)
+    }
+    renderCards()
+  }, [])
 
   return (
     <>
@@ -40,9 +57,7 @@ const Home = () => {
       gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
       gridGap: '3rem'
     }}>
-      {cards.map((card, index) => (
-        <Card1 key={index} />
-      ))}
+      {cards}
     </div>
     </>
   );

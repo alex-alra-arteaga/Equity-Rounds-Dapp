@@ -18,7 +18,6 @@ const Rectangle = () => {
     ABI,
     signer,
   )
-  
   const [loading, setLoading] = useState(false)
   const [isDisabled, setIsDisabled] = useState(true)
   const [companyName, setCompanyName] = useState("")

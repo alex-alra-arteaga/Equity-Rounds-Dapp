@@ -17,7 +17,6 @@ const Home = () => {
       }}>
       <Image 
           src="/create-campaign1.png"
-          alt="Mountains with snow"
           fill= 'true'
           objectFit='cover'
         />

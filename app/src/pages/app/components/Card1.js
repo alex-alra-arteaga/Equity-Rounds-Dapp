@@ -1,6 +1,20 @@
 import { Card, Col, Row, Button, Text } from "@nextui-org/react";
+import React, { useState, useEffect } from "react"
+import { BigNumber, Contract, ethers, providers, Wallet } from "ethers"
+import { EQUITY_CAMPAIGN_CONTRACT_ADDRESS, ABI } from "constants/constants"
+import { useAccount, useSigner } from "wagmi"
 
-export const Card1 = () => (
+export const Card1 = () => {
+  const { data: signer } = useSigner()
+
+  const equityCampaignContract = new Contract(
+    EQUITY_CAMPAIGN_CONTRACT_ADDRESS,
+    ABI,
+    signer,
+  )
+
+  return (
+    <div>
   <Card css={{ w: "100%", h: "400px" }}>
     <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
       <Col>
@@ -57,4 +71,5 @@ export const Card1 = () => (
       </Row>
     </Card.Footer>
   </Card>
-);
+  </div>
+)};
