@@ -28,11 +28,11 @@ module.exports = {
     },
   },
   gasReporter: {
-    enabled: false, //activate it at yarn hardhat test
+    enabled: true, //activate it at yarn hardhat test
     outputFile: "gas-report.txt", //add it to gitignore
     noColors: true, //no syntax colors
     currency: "USD", //get the costs in USD in a blockchain like eth
-    //coinmarketcap: COINMARKETCAP_API_KEY //outcomment it to have USD in gas reporter
+    coinmarketcap: COINMARKETCAP_API_KEY //outcomment it to have USD in gas reporter
 },
   solidity: "0.8.17",
   settings: {

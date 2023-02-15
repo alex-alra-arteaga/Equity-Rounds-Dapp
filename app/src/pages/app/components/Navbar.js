@@ -23,10 +23,9 @@ export default function Navbar() {
   return (
     <header className={styles.navbar} style={{backgroundColor: backgroundColor}}>
     <div style={{width: 20}}></div>
-    <Link href="//" style={{paddingRight: '30px', textDecoration: 'none'}}>
+    <Link href="/" style={{paddingRight: '30px', textDecoration: 'none'}}>
       <span className={styles.title}>Ignota Protocol</span>
     </Link>
-    <div style={{width: 20}}></div>
     <div style={{width: 20}}></div>
     <ul>
       <Link href="//create-campaign" style={{paddingRight: '30px', textDecoration: 'none'}}>

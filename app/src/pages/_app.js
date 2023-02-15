@@ -12,7 +12,7 @@ import { mainnet, polygon, optimism, goerli } from '@wagmi/core/chains'
 
 const { chains, provider } = configureChains(
   [mainnet, goerli, polygon, optimism],
-  [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}), publicProvider()]
+  [alchemyProvider({ apiKey: 'n47skukukkxpwhFSGnTCMWNkzkRLQdR1'}), publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({

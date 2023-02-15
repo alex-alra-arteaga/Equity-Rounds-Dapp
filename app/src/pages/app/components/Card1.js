@@ -2,16 +2,42 @@ import { Card, Col, Row, Button, Text } from "@nextui-org/react";
 import React, { useState, useEffect } from "react"
 import { BigNumber, Contract, ethers, providers, Wallet } from "ethers"
 import { EQUITY_CAMPAIGN_CONTRACT_ADDRESS, ABI } from "constants/constants"
-import { useAccount, useSigner } from "wagmi"
 
-export const Card1 = () => {
-  const { data: signer } = useSigner()
+export const Card1 = (props) => {
+  const index = props.index
+  const signer = props.signer
+  console.log("index", index)
+  console.log(signer)
+  const [equityCampaignContract, setContract] = useState(null)
+  const [deadline, setDeadline] = useState("null")
+  const [amountRaised, setAmountRaised] = useState("null")
+  let contract
+  useEffect(() => {
+    if (!signer) return 
+    contract = new Contract(
+      EQUITY_CAMPAIGN_CONTRACT_ADDRESS,
+      ABI,
+      signer,
+    )
+    setContract(contract);
+    console.log("hehe");
+    (async () => {
+      await getDeadline()
+      await getAmountRaised()
+    })()
+  }, [])
 
-  const equityCampaignContract = new Contract(
-    EQUITY_CAMPAIGN_CONTRACT_ADDRESS,
-    ABI,
-    signer,
-  )
+  const getDeadline = async () => {
+    const campaign = await contract.campaigns(index)
+    const deadline = campaign.deadline
+    const date = new Date(deadline*1000)
+    setDeadline(date.toUTCString())
+  }
+  const getAmountRaised = async () => {
+    const campaign = await contract.campaigns(index)
+    const amountRaised = (campaign.sharesBought * campaign.pricePerShare / 10e18) + " ETH"
+    setAmountRaised(amountRaised)
+  }
 
   return (
     <div>
@@ -48,10 +74,10 @@ export const Card1 = () => {
       <Row>
         <Col>
           <Text color="#000" size={12}>
-            Deadline
+            {deadline}
           </Text>
           <Text color="#000" size={12}>
-            Amount Raised
+            {amountRaised}
           </Text>
         </Col>
         <Col>

@@ -27,8 +27,8 @@ const Rectangle = () => {
   const [pricePerShare, setPricePerShare] = useState(zero)
   const [deadlineHour, setDeadlineHour] = useState("")
   const [deadlineDate, setDeadlineDate] = useState("")
-  const [isImageAdded, setIsImageAdded] = useState(false)
-  const [image, setImage] = useState(null)
+  const [isImageAdded, setIsImageAdded] = useState(true)
+  const [ipfs, setIpfs] = useState(null)
 
   useEffect(() => {
     if (
@@ -51,33 +51,27 @@ const Rectangle = () => {
       setIsDisabled(true)
   }, [companyName, industry, percentageOfEquity, sharesOffered, pricePerShare, deadlineHour, deadlineDate, isImageAdded])
 
-  const ipfs = create({
-    host: 'ipfs.infura.io',
-    port: 5001,
-    protocol: 'http'
-  })
-
-  async function storeStringOnIpfs() {
-    const campaignID = equityCampaignContract.s_numberCampaigns() + 1
+  useEffect(() => {
+    setIpfs(
+      create({
+        port: 5001
+    }))
+  }, [])
+  const storeStringOnIpfs = async () => {
+    const campaignID = +(await equityCampaignContract.s_numberCampaigns()) + 1
     const body = {
-      name: campaignID,
       message: industry + '||' + companyName
     }
-      const content = JSON.stringify(body)
-      const contentBuffer = Buffer.from(content)
-      const options = {
-        wrapWithDirectory: true,
-        progress: (prog) => console.log(`Upload progress: ${prog}`),
-        pin: true
-      }
-      const results = await ipfs.add({ path: campaignID, content: contentBuffer }, options)
-      return results[0].hash
-  }
-
-  const fileOptions = {
-    wrapWithDirectory: true,
-    progress: (prog) => console.log(`Upload progress: ${prog}`),
-    pin: true
+    const content = JSON.stringify(body)
+    console.log(content)
+    const contentBuffer = Buffer.from(content)
+    const options = {
+      wrapWithDirectory: true,
+      progress: (prog) => console.log(`Upload Text progress: ${prog}`),
+      pin: true
+    }
+    const results = await ipfs.add({ path: "textInfo" + campaignID, content: contentBuffer }, options)
+    return results.cid.toString()
   }
 
   const handleImageChange = () => {
@@ -93,34 +87,21 @@ const Rectangle = () => {
     }
   }
 
-  const handleImageInput = () => {
-    const file = document.getElementById("img-input").files[0]
-    console.log(file)
-    const fileUrl = URL.createObjectURL(file)
-
-    // Open a new window and display the selected file
-    const newWindow = window.open(fileUrl, '_blank')
-    newWindow.focus()
-    const reader = new FileReader()
-
-    reader.onload = async () => {
-      const campaignID = equityCampaignContract.s_numberCampaigns() + 1
-      const buffer = Buffer.from(event.target.result)
-      const ipfsResult = await ipfs.add({path: "campaignImage" + campaignID, content: buffer}, fileOptions)
-      .then((result) => {
-        console.log(`File uploaded to IPFS with hash ${result.cid.toString()}`)
-      })
-      .catch((error) => {
-        console.error(`Error uploading file to IPFS: ${error}`)
-        return
-      })
-      const ipfsHash = ipfsResult.path
-      console.log(`Image uploaded to IPFS with hash: ${ipfsHash}`)
-      setImage(ipfsHash)
+  const handleImageInput = async () => {
+    const fileOptions = {
+      wrapWithDirectory: true,
+      progress: (prog) => console.log(`Upload Image progress: ${prog}`),
+      pin: true
     }
-    reader.readAsArrayBuffer(file)
+    const blob = new Blob([await document.getElementById("img-input").files[0].arrayBuffer()], { type: "image/jpg" })
+    console.log("blob: ", blob)
+    setIsImageAdded(true);
+    const campaignID = +(await equityCampaignContract.s_numberCampaigns()) + 1
+    const ipfsResult = await ipfs.add({ path: "campaignImage" + campaignID, content: blob }, fileOptions)
+    const ipfsCID = ipfsResult.cid.toString()
+    console.log(`Image uploaded to IPFS with hash: ${ipfsCID}`)
+    return ipfsCID
   }
-  
 
   const submitCampaign = async () => {
     try {
@@ -128,9 +109,10 @@ const Rectangle = () => {
       setLoading(true)
       setIsDisabled(true)
       const ipfsCID = await storeStringOnIpfs()
-      handleImageInput()
-      console.log(ipfsCID)
-      await createCampaign(ipfsCID, industry, equityCampaignContract, percentageOfEquity, sharesOffered, pricePerShare, deadline)
+      const imgCID = await handleImageInput()
+      console.log("ipfsCID: ", ipfsCID)
+      console.log("ipfsCID: ", imgCID)
+      await createCampaign(ipfsCID, imgCID, equityCampaignContract, percentageOfEquity, sharesOffered, pricePerShare, deadline).then()
       setIsDisabled(false)
       setLoading(false)
     } catch (err) {
@@ -150,16 +132,16 @@ const Rectangle = () => {
           <Input onChange={(e) => setIndustry(e.target.value)} css={{ label: { color: "white" } }} clearable label="Industry" placeholder="Industry" />
         </Grid>
         <Grid xs={6}>
-          <Input onChange={(e) => setPercentageOfEquity(e.target.value)} css={{ label: { color: "white" } }}clearable label="Percentage of Equity" placeholder="Percentage of Equity" />
+          <Input onChange={(e) => setPercentageOfEquity(e.target.value)} css={{ label: { color: "white" } }} clearable label="Percentage of Equity" placeholder="Percentage of Equity" />
         </Grid>
         <Grid xs={6}>
-          <Input onChange={(e) => setSharesOffered(e.target.value)} css={{ label: { color: "white" } }} clearable label="Shares Offered" placeholder="Shares Offered"/>
+          <Input onChange={(e) => setSharesOffered(e.target.value)} css={{ label: { color: "white" } }} clearable label="Shares Offered" placeholder="Shares Offered" />
         </Grid>
         <Grid xs={6}>
           <div>
             <Input onChange={(e) => setPricePerShare(e.target.value)} css={{ label: { color: "white" } }} clearable label="Price per Share" placeholder="In Wei" />
-          <div style={{height: 8}}></div>
-            <label for="img-input" id="img-input-label" className={styles.img_input_label}>Campaign Image</label>
+            <div style={{ height: 8 }}></div>
+            <label htmlFor="img-input" id="img-input-label" className={styles.img_input_label}>Campaign Image</label>
             <input
               type="file"
               id="img-input"
@@ -168,40 +150,35 @@ const Rectangle = () => {
               accept="image/*"
               onChange={handleImageChange}
             />
-            {image && (
-            <div>
-              <img src={`https://ipfs.io/ipfs/${image}`} alt="Uploaded Image" />
-            </div>
-            )}
           </div>
         </Grid>
         <Grid xs={6}>
-            <div> 
-          <Input
-            css={{ label: { color: "white" } }}
-            onChange={(e) => setDeadlineHour(e.target.value)}
-            width="186px" 
-            label="Deadline (UTC)" 
-            type="time" 
-          />
-          <div style={{height: 10}}></div>
-          <Input
-            onChange={(e) => setDeadlineDate(e.target.value)}
-            width="186px" 
-            type="date" 
-          />
+          <div>
+            <Input
+              css={{ label: { color: "white" } }}
+              onChange={(e) => setDeadlineHour(e.target.value)}
+              width="186px"
+              label="Deadline (UTC)"
+              type="time"
+            />
+            <div style={{ height: 10 }}></div>
+            <Input
+              onChange={(e) => setDeadlineDate(e.target.value)}
+              width="186px"
+              type="date"
+            />
           </div>
         </Grid>
       </Grid.Container>
-      <Spacer y={0.4}/>
+      <Spacer y={0.4} />
       <div style={{ display: "flex", justifyContent: "center" }}>
-      { (isConnected) ?
-      <Button onPress={submitCampaign} icon={<LockIcon fill="currentColor" />} color="gradient" size='lg' disabled={isDisabled}>
-        {loading ?
-        <Loading type="points" color="currentColor" size="sm" />
-        : <>Deploy</>}
-      </Button>
-      : <Button disabled icon={<LockIcon fill="currentColor" />} color="gradient" size='lg'>Connect Wallet</Button>}
+        {(isConnected) ?
+          <Button onPress={submitCampaign} icon={<LockIcon fill="currentColor" />} color="gradient" size='lg' disabled={isDisabled}>
+            {loading ?
+              <Loading type="points" color="currentColor" size="sm" />
+              : <>Deploy</>}
+          </Button>
+          : <Button disabled icon={<LockIcon fill="currentColor" />} color="gradient" size='lg'>Connect Wallet</Button>}
       </div>
     </div>
   )

@@ -74,7 +74,7 @@ contract EquityCampaign {
      * @dev In the createCampaign function you can store the ipfsCID for your information text, which will be linked to the campaignID for the frontend display, this event will be queried by The Graph
      * The frontend itself hashes the information of the businessName and it's industry type, stores it in IPFS, returns the CID and passes it to the contract
      */
-    event campaignInfo(string indexed ipfsCID);
+    event campaignInfo(string indexed infoCID, string indexed imgCID);
 
     modifier isFounder(uint _campaignID) {
         if (!campaigns[_campaignID].init)
@@ -107,7 +107,8 @@ contract EquityCampaign {
      * @param _deadline: representation in unix time of campaign termination
      */
     function createCampaign(
-        string memory ipfsCID,
+        string memory infoCID,
+        string memory imgCID,
         uint8 _percentageOfEquity,
         uint40 _sharesOffered,
         uint88 _pricePerShare,
@@ -132,7 +133,7 @@ contract EquityCampaign {
             creationTime: uint64(block.timestamp),
             deadline: _deadline
         });
-        emit campaignInfo(ipfsCID);
+        emit campaignInfo(infoCID, imgCID);
     }
 
     /**

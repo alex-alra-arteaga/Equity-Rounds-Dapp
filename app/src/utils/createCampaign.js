@@ -25,17 +25,20 @@ export const mapInfoToID = async (equityCampaignContract, companyName, industry)
     console.log(map.get(campaignID))
   }
 
-export const createCampaign = async (ipfsCID, equityCampaignContract, percentageOfEquity, sharesOffered, pricePerShare, deadline) => {
+export const createCampaign = async (ipfsCID, imgCID, equityCampaignContract, percentageOfEquity, sharesOffered, pricePerShare, deadline) => {
   try {
+  console.log(ipfsCID, imgCID, percentageOfEquity, sharesOffered, pricePerShare, deadline)
   const fee = ethers.utils.parseEther("0.01")
   const tx = await equityCampaignContract.createCampaign(
     ipfsCID,
+    imgCID,
     percentageOfEquity,
     sharesOffered,
     pricePerShare,
     deadline,
-    {gasLimit: 3e7, value: fee},
+    {gasLimit: 3e6, value: fee},
   )
+  console.log("tx: ", tx)
   await tx.wait()
   } catch (err) {
     console.log(err)

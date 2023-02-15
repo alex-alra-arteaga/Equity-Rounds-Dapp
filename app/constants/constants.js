@@ -1,4 +1,4 @@
-export const EQUITY_CAMPAIGN_CONTRACT_ADDRESS = "0x9f82b8d998bd96e414489d7e60aad1804e3f062e"
+export const EQUITY_CAMPAIGN_CONTRACT_ADDRESS = "0x965A4c0dA316D30B8fFA4EE65EEc16822B439cDF"
 export const API_URL = "https://api.studio.thegraph.com/query/41909/ignota-protocol/v1"
 export const ABI = [
   {
@@ -23,17 +23,7 @@ export const ABI = [
   },
   {
     "inputs": [],
-    "name": "EquityCampaign__InvalidAddress",
-    "type": "error"
-  },
-  {
-    "inputs": [],
     "name": "EquityCampaign__InvalidCampaignID",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "EquityCampaign__InvalidInvestorID",
     "type": "error"
   },
   {
@@ -61,118 +51,18 @@ export const ABI = [
     "inputs": [
       {
         "indexed": true,
-        "internalType": "address",
-        "name": "founder",
-        "type": "address"
+        "internalType": "string",
+        "name": "infoCID",
+        "type": "string"
       },
       {
         "indexed": true,
-        "internalType": "uint8",
-        "name": "percentageOfEquity",
-        "type": "uint8"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint40",
-        "name": "sharesOffered",
-        "type": "uint40"
+        "internalType": "string",
+        "name": "imgCID",
+        "type": "string"
       }
     ],
-    "name": "campaignCreated01",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint88",
-        "name": "pricePerShare",
-        "type": "uint88"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint64",
-        "name": "creationTime",
-        "type": "uint64"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint128",
-        "name": "deadline",
-        "type": "uint128"
-      }
-    ],
-    "name": "campaignCreated02",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "contributor",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "shares",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "campaignID",
-        "type": "uint256"
-      }
-    ],
-    "name": "contribution",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "withdrawer",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "campaignID",
-        "type": "uint256"
-      }
-    ],
-    "name": "donationWithdrawed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "contributor",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "shares",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "campaignID",
-        "type": "uint256"
-      }
-    ],
-    "name": "sharesSold",
+    "name": "campaignInfo",
     "type": "event"
   },
   {
@@ -287,6 +177,16 @@ export const ABI = [
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "infoCID",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "imgCID",
+        "type": "string"
+      },
+      {
         "internalType": "uint8",
         "name": "_percentageOfEquity",
         "type": "uint8"
@@ -310,123 +210,6 @@ export const ABI = [
     "name": "createCampaign",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_campaignID",
-        "type": "uint256"
-      }
-    ],
-    "name": "getCampaign",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "bool",
-            "name": "init",
-            "type": "bool"
-          },
-          {
-            "internalType": "address",
-            "name": "founder",
-            "type": "address"
-          },
-          {
-            "internalType": "uint8",
-            "name": "percentageOfEquity",
-            "type": "uint8"
-          },
-          {
-            "internalType": "uint80",
-            "name": "campaignID",
-            "type": "uint80"
-          },
-          {
-            "internalType": "uint88",
-            "name": "donations",
-            "type": "uint88"
-          },
-          {
-            "internalType": "uint40",
-            "name": "investors",
-            "type": "uint40"
-          },
-          {
-            "internalType": "uint40",
-            "name": "sharesOffered",
-            "type": "uint40"
-          },
-          {
-            "internalType": "uint88",
-            "name": "pricePerShare",
-            "type": "uint88"
-          },
-          {
-            "internalType": "uint64",
-            "name": "sharesBought",
-            "type": "uint64"
-          },
-          {
-            "internalType": "uint64",
-            "name": "creationTime",
-            "type": "uint64"
-          },
-          {
-            "internalType": "uint128",
-            "name": "deadline",
-            "type": "uint128"
-          }
-        ],
-        "internalType": "struct EquityCampaign.Campaign",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_campaignID",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "investor",
-        "type": "address"
-      }
-    ],
-    "name": "getInvestor",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint64",
-            "name": "investorID",
-            "type": "uint64"
-          },
-          {
-            "internalType": "uint96",
-            "name": "sharesOwned",
-            "type": "uint96"
-          },
-          {
-            "internalType": "uint96",
-            "name": "donated",
-            "type": "uint96"
-          }
-        ],
-        "internalType": "struct EquityCampaign.Investor",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {

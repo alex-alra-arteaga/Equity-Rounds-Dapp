@@ -7,25 +7,36 @@ import { EQUITY_CAMPAIGN_CONTRACT_ADDRESS, ABI } from "constants/constants"
 import { useSigner } from "wagmi"
 
 const Home = () => {
+  let contract
   const [cards, setCards] = useState([])
-  const { data: signer } = useSigner()
-  const equityCampaignContract = new Contract(
-    EQUITY_CAMPAIGN_CONTRACT_ADDRESS,
-    ABI,
-    signer,
-  )
+  const [equityCampaignContract, setContract] = useState(null)
+  const [signer, setSigner] = useState();
+  // const { data: signer } = useSigner()
+  useSigner({
+    onSuccess: (data) => setSigner(data)
+  })
   useEffect(() => {
+    if (!signer) return 
+    contract = new Contract(
+      EQUITY_CAMPAIGN_CONTRACT_ADDRESS,
+      ABI,
+      signer,
+    )
+    setContract(contract)
     const renderCards = async () => {
-      const numOfCampaigns = 4
-      console.log(numOfCampaigns)
-      const cards = []
-      for (let i = 0; i != numOfCampaigns; i++) {
-        cards.push(<Card1 key={i}/>)
+      console.log("contract: ", contract)
+      if (contract) {
+        const numOfCampaigns = +(await contract.s_numberCampaigns())
+        console.log("num: ", numOfCampaigns)
+        const cards = []
+        for (let i = 0; i != numOfCampaigns; i++) {
+          cards.push(<Card1 index={i + 1} signer={signer} />)
+        }
+        setCards(cards)
       }
-      setCards(cards)
     }
     renderCards()
-  }, [])
+  }, [signer])
 
   return (
     <>

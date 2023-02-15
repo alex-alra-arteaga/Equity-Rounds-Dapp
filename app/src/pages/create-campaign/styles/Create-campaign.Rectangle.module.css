@@ -12,7 +12,9 @@
   font-family: 'Proxima Nova';
   color: white;
 }
-
+/*
+  Media-query
+*/
 .rectangle {
     width: 450px;
     height: 400px;

@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for contracts/EquityCampaign.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">contracts/</a> EquityCampaign.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>23/23</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">83.87% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>52/62</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">90% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>9/10</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">85.45% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>47/55</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">20×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.9;
+&nbsp;
+error EquityCampaign__SafetyCheck();
+error EquityCampaign__FeeNotPayed();
+error EquityCampaign__NotEnoughFundraiseGoal();
+error EquityCampaign__ExceededAmountAvailable();
+error EquityCampaign__InsufficientAmount();
+error EquityCampaign__SellSharesFailed();
+error EquityCampaign__InvalidCampaignID();
+error EquityCampaign__NotFounder();
+error EquityCampaign__HasNotEnded();
+error EquityCampaign__IsNotRunning();
+error EquityCampaign__InvalidInvestorID();
+error EquityCampaign__InvalidAddress();
+&nbsp;
+/**
+ * @title EquityCampaign
+ * @author Alex "Alra" Arteaga
+ * @notice Transparent, secure and permissionless contract to crowdfund investing rounds, redistributing its equity among its investors
+ * @dev Storage and logical implementation, website at: ""
+ * @custom:experimental Proof of Concept Equity Round contract
+ * @custom:in-a-future Capability for the founder to mint shares for an specific address (example: employee or cofounder address)
+ * @custom:legal-advice Smart contract is proof of the borrowing obligations the founder has with its investors,
+ * if he doesn't deliver, it has an irl legal obligation
+ */
+&nbsp;
+contract EquityCampaign {
+&nbsp;
+    uint256 public constant FEE = 0.01 ether;
+    uint256 public s_numberCampaigns;
+&nbsp;
+    // Investor data
+    /**
+     * @notice User can be an investor and get shares equivalent to the ETH invested
+     * or either, a donator, doesn't get shares, but its info is stored, if the founder wants to recompense him
+     * @dev Structured to only take 1 slot (32 bytes), which vastly reduces gas
+     */
+    struct Investor {
+        uint64 investorID;
+        uint96 sharesOwned;
+        uint96 donated; // in wei
+        // uint percentageOfBusiness;   backend calculated
+        // uint amountInvested;         backend calculated
+        // ContributionLevel level;     backend calculated
+    }
+&nbsp;
+    // Campaign data
+    /// @dev Structured to only take 3 slots, which vastly reduces gas
+    /// all fields money-related are in wei
+    struct Campaign {
+        bool init;
+        address founder;
+        uint8 percentageOfEquity; /* % of equity being selled */
+        uint80 campaignID;
+        uint88 donations;
+        uint40 investors;
+        uint40 sharesOffered;
+        uint88 pricePerShare;
+        uint64 sharesBought;
+        uint64 creationTime;
+        uint128 deadline;
+        // uint fundraisingGoal;        backend calculated
+        // uint amountRaised;           backend calculated
+    }
+&nbsp;
+    // mapping from the ID to its respective campaign
+    mapping(uint =&gt; Campaign) public campaigns;
+    // mapping from ID of campaign, to investor address, to its information
+    mapping(uint =&gt; mapping(address =&gt; Investor)) public investorInfo;
+&nbsp;
+    /**
+     * @notice Events
+     * @dev In the createCampaign function you can store the ipfsCID for your information text, which will be linked to the campaignID for the frontend display, this event will be queried by The Graph
+     * The frontend itself hashes the information of the businessName and it's industry type, stores it in IPFS, returns the CID and passes it to the contract
+     */
+    event campaignInfo(string indexed infoCID, string indexed imgCID);
+&nbsp;
+    modifier isFounder(uint _campaignID) {
+        if (!campaigns[_campaignID].init)
+            revert EquityCampaign__InvalidCampaignID();
+        if (campaigns[_campaignID].founder != msg.sender)
+            revert EquityCampaign__NotFounder();
+        _;
+    }
+&nbsp;
+    modifier hasCampaignEnded(uint _campaignID) {
+        if (block.timestamp &lt; campaigns[_campaignID].deadline)
+            revert EquityCampaign__HasNotEnded();
+        _;
+    }
+&nbsp;
+    modifier isCampaignRunning(uint _campaignID) {
+        if (!campaigns[_campaignID].init)
+            revert  EquityCampaign__InvalidCampaignID();
+        if (block.timestamp &gt; campaigns[_campaignID].deadline)
+            revert EquityCampaign__IsNotRunning();
+        _;
+    }
+&nbsp;
+    /**
+     * @notice You can use this function to create the desired campaign
+     * @dev Future implementation could add floating fixed point capabilities
+     * @param _percentageOfEquity: percentage as of total the business whants to publicly sale
+     * @param _sharesOffered: amount of shares on sale
+     * @param _pricePerShare: cost in wei for each one
+     * @param _deadline: representation in unix time of campaign termination
+     */
+    function createCampaign(
+        string memory infoCID,
+        string memory imgCID,
+        uint8 _percentageOfEquity,
+        uint40 _sharesOffered,
+        uint88 _pricePerShare,
+        uint128 _deadline
+    ) public payable {
+        if (msg.value &lt; FEE)
+            revert EquityCampaign__FeeNotPayed();
+        if (_sharesOffered == 0 || _pricePerShare == 0 || _deadline &lt; block.timestamp
+        || _percentageOfEquity == 0 || _percentageOfEquity &gt; 100)
+            revert EquityCampaign__SafetyCheck();
+        s_numberCampaigns++;
+        campaigns[s_numberCampaigns] = Campaign({
+            init: true,
+            founder: msg.sender,
+            campaignID: uint80(s_numberCampaigns),
+            donations: 0,
+            investors: 0,
+            percentageOfEquity: _percentageOfEquity,
+            sharesOffered: _sharesOffered,
+            pricePerShare: _pricePerShare,
+            sharesBought: 0,
+            creationTime: uint64(block.timestamp),
+            deadline: _deadline
+        });
+        emit campaignInfo(infoCID, imgCID);
+    }
+&nbsp;
+    /**
+     * @notice Implementation to buy shares to the desired campaign,
+     * you can choose to get (Investor) or not the shares (Donator)
+     * Be careful, if you pay for more than what corresponds for the amount you'll lose that eth
+     * @param _amount: Number of shares intended to buy
+     * @param _campaignID: Desired campaignID
+     * @param isInvestor: True --&gt; Investor (gets the shares), false --&gt; donator (no shares)
+     */
+    function contributeToCampaign(
+        uint64 _amount,
+        uint80 _campaignID,
+        bool isInvestor
+    ) public payable isCampaignRunning(_campaignID) {
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (isInvestor &amp;&amp; _amount * campaigns[_campaignID].pricePerShare &gt; msg.value)
+            revert EquityCampaign__InsufficientAmount();
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (isInvestor &amp;&amp; campaigns[_campaignID].sharesOffered &lt; (campaigns[_campaignID].sharesBought + _amount))
+            revert EquityCampaign__ExceededAmountAvailable();
+        if (investorInfo[_campaignID][msg.sender].investorID == 0) {
+            investorInfo[_campaignID][msg.sender].investorID = campaigns[_campaignID].investors + 1;
+            campaigns[_campaignID].investors++;
+        }
+        if (isInvestor) {
+            investorInfo[_campaignID][msg.sender].sharesOwned += _amount;
+            campaigns[_campaignID].sharesBought += _amount;
+        } else {
+            investorInfo[_campaignID][msg.sender].donated = uint96(msg.value);
+            campaigns[_campaignID].donations += uint88(msg.value);
+        }
+    }
+&nbsp;
+    // @notice: Allows the funder of its campaign to withdraw all the donations when the campaign is ended
+    function withdrawDonations(uint80 _campaignID) public isFounder(_campaignID) hasCampaignEnded(_campaignID) {
+        uint value = campaigns[_campaignID].donations;
+        campaigns[_campaignID].donations = 0;
+        (bool sent, ) = msg.sender.call{value: value}("");
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (!sent)
+            revert EquityCampaign__SellSharesFailed();
+    }
+&nbsp;
+    // @notice: Allows the particular to sell a desired amount of shares of an specific campaign
+    function sellShares(uint64 _amount, uint80 _campaignID) public isCampaignRunning(_campaignID) {
+        if (_amount &gt; investorInfo[_campaignID][msg.sender].sharesOwned || _amount == 0)
+            revert EquityCampaign__SafetyCheck();
+        investorInfo[_campaignID][msg.sender].sharesOwned -= _amount;
+        campaigns[_campaignID].sharesBought -= _amount;
+        (bool sent, ) = msg.sender.call{value: _amount * campaigns[_campaignID].pricePerShare}("");
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (!sent)
+            revert EquityCampaign__SellSharesFailed();
+    }
+&nbsp;
+    // @notice: Allows the founder of the campaign to sell a desired amount of shares once the campaign ends, investors shares info are not modified
+    function sellSharesFounder(uint64 _amount, uint80 _campaignID) public isFounder(_campaignID) hasCampaignEnded(_campaignID) {
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (!campaigns[_campaignID].init)
+            revert  EquityCampaign__InvalidCampaignID();
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (_amount &gt; campaigns[_campaignID].sharesBought || _amount == 0)
+            revert EquityCampaign__SafetyCheck();
+        campaigns[_campaignID].sharesBought -= _amount;
+        (bool sent, ) = msg.sender.call{value: _amount * campaigns[_campaignID].pricePerShare}("");
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (!sent)
+            revert EquityCampaign__SellSharesFailed();
+    }
+&nbsp;
+    // @notice: Allows the funder of a respective campaign to change its ownership
+    function transferFounderOwnership(address newFounder, uint80 _campaignID) public isFounder(_campaignID) {
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (newFounder == address(0))
+            revert EquityCampaign__SafetyCheck();
+        campaigns[_campaignID].founder = newFounder;
+    }
+&nbsp;
+    /// @custom:to-consider A future implementation with a function call to 'delete' very old campaigns data or investors with current 0 shares amount, for up to 75% gas refund 
+&nbsp;
+    receive() external payable {}
+&nbsp;
+<span class="fstat-no" title="function not covered" >    fallback() external payable {}</span>
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Feb 15 2023 05:28:21 GMT-0500 (Eastern Standard Time)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
