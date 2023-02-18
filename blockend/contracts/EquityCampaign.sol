@@ -42,7 +42,6 @@ contract EquityCampaign {
         uint96 donated; // in wei
         // uint percentageOfBusiness;   backend calculated
         // uint amountInvested;         backend calculated
-        // ContributionLevel level;     backend calculated
     }
 
     // Campaign data

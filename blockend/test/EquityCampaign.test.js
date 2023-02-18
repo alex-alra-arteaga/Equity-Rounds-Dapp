@@ -96,6 +96,7 @@ const {developmentChains, networkConfig} = require("../helper-hardhat-config")
     })
     it("buys shares when is investor", async () => {
       const amount = ethers.utils.parseEther("3.5")
+      console.log("amount in wei?:" , amount)
       const {equityCampaign, fee, deployer} = await loadFixture(EquityCampaignFixture)
       await equityCampaign.createCampaign("qsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR", "QmSQedQrSDuyxVWiTA431m2vJe4n84Ju1oVBz9MMbQygqR", 20, 100, 20, Math.floor(Date.now() / 1000) + 10000, {value: fee})
       await equityCampaign.contributeToCampaign(100, 1, true, {value: amount})
