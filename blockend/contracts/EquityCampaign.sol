@@ -73,7 +73,7 @@ contract EquityCampaign {
      * @dev In the createCampaign function you can store the ipfsCID for your information text, which will be linked to the campaignID for the frontend display, this event will be queried by The Graph
      * The frontend itself hashes the information of the businessName and it's industry type, stores it in IPFS, returns the CID and passes it to the contract
      */
-    event campaignInfo(string indexed infoCID, string indexed imgCID);
+    event campaignInfo(bytes32 indexed infoCID, bytes32 indexed imgCID, bytes32 indexed nameCID);
 
     modifier isFounder(uint _campaignID) {
         if (!campaigns[_campaignID].init)
@@ -106,8 +106,9 @@ contract EquityCampaign {
      * @param _deadline: representation in unix time of campaign termination
      */
     function createCampaign(
-        string memory infoCID,
-        string memory imgCID,
+        bytes32 infoCID,
+        bytes32 imgCID,
+        bytes32 nameCID,
         uint8 _percentageOfEquity,
         uint40 _sharesOffered,
         uint88 _pricePerShare,
@@ -132,7 +133,7 @@ contract EquityCampaign {
             creationTime: uint64(block.timestamp),
             deadline: _deadline
         });
-        emit campaignInfo(infoCID, imgCID);
+        emit campaignInfo(infoCID, imgCID, nameCID);
     }
 
     /**
@@ -153,7 +154,7 @@ contract EquityCampaign {
         if (isInvestor && campaigns[_campaignID].sharesOffered < (campaigns[_campaignID].sharesBought + _amount))
             revert EquityCampaign__ExceededAmountAvailable();
         if (investorInfo[_campaignID][msg.sender].investorID == 0) {
-            investorInfo[_campaignID][msg.sender].investorID = campaigns[_campaignID].investors + 1;
+            investorInfo[_campaignID][msg.sender].investorID = campaigns[_campaignID].investors++;
             campaigns[_campaignID].investors++;
         }
         if (isInvestor) {

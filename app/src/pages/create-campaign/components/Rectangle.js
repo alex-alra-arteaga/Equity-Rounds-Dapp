@@ -8,6 +8,7 @@ import { useAccount, useSigner } from "wagmi"
 import { inputsToUnixTime, mapInfoToID, createCampaign } from "@/utils/createCampaign"
 import { EQUITY_CAMPAIGN_CONTRACT_ADDRESS, ABI } from "constants/constants"
 import { create } from 'ipfs-http-client'
+import { getIpfsHashFromBytes32, getBytes32FromIpfsHash } from "@/utils/IPFS"
 
 const Rectangle = () => {
   const { isConnected } = useAccount()
@@ -27,7 +28,8 @@ const Rectangle = () => {
   const [pricePerShare, setPricePerShare] = useState(zero)
   const [deadlineHour, setDeadlineHour] = useState("")
   const [deadlineDate, setDeadlineDate] = useState("")
-  const [isImageAdded, setIsImageAdded] = useState(true)
+  const [isImageAdded, setIsImageAdded] = useState(false)
+  const [isPdfAdded, setIsPdfAdded] = useState(false)
   const [ipfs, setIpfs] = useState(null)
 
   useEffect(() => {
@@ -40,7 +42,7 @@ const Rectangle = () => {
       Number(percentageOfEquity) <= 100 &&
       Number(percentageOfEquity) > 0 &&
       !(deadlineHour === "") && !(deadlineDate === "") &&
-      isImageAdded &&
+      isImageAdded && isPdfAdded &&
       !(/^\d+\.\d+$/.test(sharesOffered)) && !(/^\d+\.\d+$/.test(pricePerShare)) && // check that it's not float
       (!(sharesOffered === "") && (BigNumber.isBigNumber(BigNumber.from(sharesOffered)) && BigNumber.from(sharesOffered) != 0)) &&
       (!(pricePerShare === "") && (BigNumber.isBigNumber(BigNumber.from(pricePerShare)) && BigNumber.from(pricePerShare) != 0)) &&
@@ -54,9 +56,11 @@ const Rectangle = () => {
   useEffect(() => {
     setIpfs(
       create({
-        port: 5001
+        host: '192.168.1.199',
+        port: 4999
     }))
   }, [])
+
   const storeStringOnIpfs = async () => {
     const campaignID = +(await equityCampaignContract.s_numberCampaigns()) + 1
     const body = {
@@ -87,6 +91,19 @@ const Rectangle = () => {
     }
   }
 
+  const handlePDFChange = () => {
+    const inputLabel = document.getElementById('pdf-input-label')
+    const fileInput = document.getElementById('pdf-input')
+    if (fileInput.value) {
+      setIsPdfAdded(true)
+      inputLabel.style["borderColor"] = 'green'
+    } else {
+      setIsPdfAdded(false)
+      inputLabel.style["borderColor"] = 'red'
+      return
+    }
+  }
+
   const handleImageInput = async () => {
     const fileOptions = {
       wrapWithDirectory: true,
@@ -95,11 +112,27 @@ const Rectangle = () => {
     }
     const blob = new Blob([await document.getElementById("img-input").files[0].arrayBuffer()], { type: "image/jpg" })
     console.log("blob: ", blob)
-    setIsImageAdded(true);
     const campaignID = +(await equityCampaignContract.s_numberCampaigns()) + 1
     const ipfsResult = await ipfs.add({ path: "campaignImage" + campaignID, content: blob }, fileOptions)
+    console.log("path", ipfsResult.path.toString())
     const ipfsCID = ipfsResult.cid.toString()
     console.log(`Image uploaded to IPFS with hash: ${ipfsCID}`)
+    return ipfsCID
+  }
+
+  const handlePdfInput = async () => {
+    const fileOptions = {
+      wrapWithDirectory: true,
+      progress: (prog) => console.log(`Upload Pdf progress: ${prog}`),
+      pin: true
+    }
+    const blob = new Blob([await document.getElementById("pdf-input").files[0].arrayBuffer()], { type: "application/pdf" })
+    console.log("blob: ", blob)
+    setIsPdfAdded(true);
+    const campaignID = +(await equityCampaignContract.s_numberCampaigns()) + 1
+    const ipfsResult = await ipfs.add({ path: "campaignPdf" + campaignID, content: blob }, fileOptions)
+    const ipfsCID = ipfsResult.cid.toString()
+    console.log(`Pdf uploaded to IPFS with hash: ${ipfsCID}`)
     return ipfsCID
   }
 
@@ -109,10 +142,15 @@ const Rectangle = () => {
       setLoading(true)
       setIsDisabled(true)
       const ipfsCID = await storeStringOnIpfs()
+      const ipfsCIDHex = getBytes32FromIpfsHash(ipfsCID)
       const imgCID = await handleImageInput()
-      console.log("ipfsCID: ", ipfsCID)
-      console.log("ipfsCID: ", imgCID)
-      await createCampaign(ipfsCID, imgCID, equityCampaignContract, percentageOfEquity, sharesOffered, pricePerShare, deadline).then()
+      const imgCIDHex = getBytes32FromIpfsHash(imgCID)
+      const pdfCID = await handlePdfInput()
+      const pdfCIDHex = getBytes32FromIpfsHash(pdfCID)
+      console.log("ipfsCIDHex: ", ipfsCIDHex)
+      console.log("imgCIDHex: ", imgCIDHex)
+      console.log("pdfCIDHex: ", pdfCIDHex)
+      await createCampaign(ipfsCIDHex, imgCIDHex, pdfCIDHex, equityCampaignContract, percentageOfEquity, sharesOffered, pricePerShare, deadline)
       setIsDisabled(false)
       setLoading(false)
     } catch (err) {
@@ -121,6 +159,8 @@ const Rectangle = () => {
       setLoading(false)
     }
   }
+
+
 
   return (
     <div className={styles.rectangle}>
@@ -149,6 +189,15 @@ const Rectangle = () => {
               placeholder="Campaign Image"
               accept="image/*"
               onChange={handleImageChange}
+            />
+            <label htmlFor="pdf-input" id="pdf-input-label" className={styles.pdf_input_label}>PDF Description</label>
+            <input
+              type="file"
+              id="pdf-input"
+              className={styles.pdf_input}
+              placeholder="PDF INFO"
+              accept="application/pdf"
+              onChange={handlePDFChange}
             />
           </div>
         </Grid>

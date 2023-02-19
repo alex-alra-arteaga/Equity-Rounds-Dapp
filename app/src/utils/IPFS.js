@@ -1,35 +1,16 @@
-var axios = require('axios');
-const API_KEY = process.env.NEXT_PUBLIC_PINATA_API_KEY;
-const API_SECRET = process.env.NEXT_PUBLIC_PINATA_API_SECRET;
-const JWT = process.env.NEXT_PUBLIC_JWT
+import bs58 from 'bs58'
 
-export const getIPFS_CID = async (campaignID, businessName, industryName) => {
-    // if it had be totally decentralized I would store it running my own node
-    const pinata = new pinataSDK({ pinataApiKey: API_KEY, pinataSecretApiKey: API_SECRET });
-    const content = customStringConcat(businessName, industryName)
-
-
-    const body = {
-        name: campaignID,
-        message: content
-    };
-    const options = {
-        pinataMetadata: {
-            name: MyCustomName,
-        },
-        pinataOptions: {
-            cidVersion: 0
-        }
-    };
-    pinata.pinJSONToIPFS(body, options).then((result) => {
-        //handle results here
-        console.log(result);
-    }).catch((err) => {
-        //handle error here
-        console.log(err);
-    });
+ function customStringConcat(businessName, industryName) {
+    return industryName + '||' + businessName
 }
 
-function customStringConcat(businessName, industryName) {
-    return industryName + '||' + businessName
+export function getBytes32FromIpfsHash(ipfsListing) {
+    return "0x"+bs58.decode(ipfsListing).slice(2).toString('hex')
+}
+
+export function getIpfsHashFromBytes32(bytes32Hex) {
+  const hashHex = "1220" + bytes32Hex.slice(2)
+  const hashBytes = Buffer.from(hashHex, 'hex');
+  const hashStr = bs58.encode(hashBytes)
+  return hashStr
 }

@@ -3,18 +3,51 @@ import { Card1 } from './components/Card1';
 import Navbar from './components/Navbar';
 import Image from 'next/image';
 import { BigNumber, Contract, ethers, providers, Wallet } from "ethers"
-import { EQUITY_CAMPAIGN_CONTRACT_ADDRESS, ABI } from "constants/constants"
+import { EQUITY_CAMPAIGN_CONTRACT_ADDRESS, ABI, API_URL } from "constants/constants"
 import { useSigner } from "wagmi"
+import { createClient } from 'urql';
+
+const query = `
+query {
+  campaignInfos(
+    orderBy: id,
+    orderDirection: desc
+  ) {
+    infoCID
+    imgCID
+    nameCID
+  }
+}`
+
+const client = createClient({
+  url: API_URL,
+})
+
+async function fetchData() {
+  const response = await client.query(query).toPromise()
+  console.log('response', response)
+  return response
+}
 
 const Home = () => {
   let contract
   const [cards, setCards] = useState([])
+  const [response, setResponse] = useState([])
   const [equityCampaignContract, setContract] = useState(null)
-  const [signer, setSigner] = useState();
-  // const { data: signer } = useSigner()
+  const [signer, setSigner] = useState()
+
   useSigner({
     onSuccess: (data) => setSigner(data)
   })
+
+  useEffect(() => {
+    (async () => {
+      setResponse(
+        await fetchData()
+      )
+    })()
+  }, [])
+
   useEffect(() => {
     if (!signer) return 
     contract = new Contract(
@@ -24,13 +57,11 @@ const Home = () => {
     )
     setContract(contract)
     const renderCards = async () => {
-      console.log("contract: ", contract)
       if (contract) {
         const numOfCampaigns = +(await contract.s_numberCampaigns())
-        console.log("num: ", numOfCampaigns)
         const cards = []
         for (let i = 0; i != numOfCampaigns; i++) {
-          cards.push(<Card1 index={i + 1} signer={signer} />)
+          cards.push(<Card1 index={i + 1} signer={signer} response={response.data.campaignInfos[i]} />)
         }
         setCards(cards)
       }

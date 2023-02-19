@@ -1,5 +1,5 @@
-export const EQUITY_CAMPAIGN_CONTRACT_ADDRESS = "0x965A4c0dA316D30B8fFA4EE65EEc16822B439cDF"
-export const API_URL = "https://api.studio.thegraph.com/query/41909/ignota-protocol/v1"
+export const EQUITY_CAMPAIGN_CONTRACT_ADDRESS = "0x857E5aEc48bDe1cF3F3D5D07C8886a128A81C38D"
+export const API_URL = "https://api.studio.thegraph.com/query/41909/ignota-protocol-v1/v0.0.1"
 export const ABI = [
   {
     "inputs": [],
@@ -51,15 +51,21 @@ export const ABI = [
     "inputs": [
       {
         "indexed": true,
-        "internalType": "string",
+        "internalType": "bytes32",
         "name": "infoCID",
-        "type": "string"
+        "type": "bytes32"
       },
       {
         "indexed": true,
-        "internalType": "string",
+        "internalType": "bytes32",
         "name": "imgCID",
-        "type": "string"
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "nameCID",
+        "type": "bytes32"
       }
     ],
     "name": "campaignInfo",
@@ -177,14 +183,19 @@ export const ABI = [
   {
     "inputs": [
       {
-        "internalType": "string",
+        "internalType": "bytes32",
         "name": "infoCID",
-        "type": "string"
+        "type": "bytes32"
       },
       {
-        "internalType": "string",
+        "internalType": "bytes32",
         "name": "imgCID",
-        "type": "string"
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "nameCID",
+        "type": "bytes32"
       },
       {
         "internalType": "uint8",
